@@ -34,6 +34,11 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 	private final int SECONDPROGRESS = 20;
 	private final int DURATION = 500;
 
+	//切点坐标,切线角度,贝塞尔控制点
+	double angle;
+	int bigTopX, bigTopY, bigBottomX, bigBottomY, smallTopX, smallTopY, smallBottomX, smallBottomY;
+	int bezierTopX, bezierTopY, bezierBottomX, bezierBottomY;
+
 	//tools
 	private Paint backPaint;
 	private Paint circlePaint;
@@ -42,6 +47,9 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 	private RectF rightRect;
 	private RectF midRect;
 
+	/**
+	 * 状态变化回调
+	 */
 	public OnWaterSwitchChangedListener switchChangedListener;
 
 	public void setOnWaterSwitchChangedListener(OnWaterSwitchChangedListener switchChangedListener) {
@@ -69,6 +77,7 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 		setOnClickListener(this);
 	}
 
+	//切换动画
 	private void turnSwitch() {
 		WaterAnimation animation = new WaterAnimation(0, 100, this);
 		animation.setInterpolator(new DecelerateInterpolator());
@@ -158,54 +167,45 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 		super.onDraw(canvas);
 		//画背景
 		backPaint.setColor(backColor);
-		leftRect =
-			new RectF(getleftRx() - smallcircleradius, getleftRy() - smallcircleradius, getleftRx() + smallcircleradius,
-				getleftRy() + smallcircleradius);
-		rightRect = new RectF(getRightRx() - smallcircleradius, getRightRy() - smallcircleradius,
-			getRightRx() + smallcircleradius, getRightRy() + smallcircleradius);
+		leftRect = new RectF(getleftRx() - smallcircleradius, getMiddleRy() - smallcircleradius,
+			getleftRx() + smallcircleradius, getMiddleRy() + smallcircleradius);
+		rightRect = new RectF(getRightRx() - smallcircleradius, getMiddleRy() - smallcircleradius,
+			getRightRx() + smallcircleradius, getMiddleRy() + smallcircleradius);
 		midRect =
-			new RectF(getleftRx(), getleftRy() - smallcircleradius, getRightRx(), getRightRy() + smallcircleradius);
+			new RectF(getleftRx(), getMiddleRy() - smallcircleradius, getRightRx(), getMiddleRy() + smallcircleradius);
 		canvas.drawArc(leftRect, 90, 180, true, backPaint);
 		canvas.drawArc(rightRect, 270, 180, true, backPaint);
 		canvas.drawRect(midRect, backPaint);
 		//画水滴
 		circlePaint.setColor(switchColor);
 		//从关闭到打开
-		canvas.drawCircle(getBigCircleX(PROGRESS), getleftRy(), circleradius, circlePaint);
-		canvas.drawCircle(getSmallCircleX(PROGRESS), getleftRy(), getSmallRadius(PROGRESS), circlePaint);
+		canvas.drawCircle(getBigCircleX(PROGRESS), getMiddleRy(), circleradius, circlePaint);
+		canvas.drawCircle(getSmallCircleX(PROGRESS), getMiddleRy(), getSmallRadius(PROGRESS), circlePaint);
 		initPath();
 		canvas.drawPath(waterPath, circlePaint);
 	}
 
-	double angle;
-	int bigTopX, bigTopY, bigBottomX, bigBottomY, smallTopX, smallTopY, smallBottomX, smallBottomY;
-	int bezierTopX, bezierTopY, bezierBottomX, bezierBottomY;
-
+	//贝塞尔线
 	private void initPath() {
 		waterPath.reset();
 		angle = getAngle();
 		//获取四个切点和贝塞尔控制点
 		if (isChecked) {
 			bigTopX = getBigCircleX(PROGRESS) + (int) (circleradius * Math.sin(angle));
-			bigTopY = getleftRy() - (int) (circleradius * Math.cos(angle));
 			bigBottomX = getBigCircleX(PROGRESS) + (int) (circleradius * Math.sin(angle));
-			bigBottomY = getleftRy() + (int) (circleradius * Math.cos(angle));
-
 			smallTopX = getSmallCircleX(PROGRESS) + (int) (getSmallRadius(PROGRESS) * Math.sin(angle));
-			smallTopY = getleftRy() - (int) (getSmallRadius(PROGRESS) * Math.cos(angle));
 			smallBottomX = getSmallCircleX(PROGRESS) + (int) (getSmallRadius(PROGRESS) * Math.sin(angle));
-			smallBottomY = getleftRy() + (int) (getSmallRadius(PROGRESS) * Math.cos(angle));
 		} else {
 			bigTopX = getBigCircleX(PROGRESS) - (int) (circleradius * Math.sin(angle));
-			bigTopY = getleftRy() - (int) (circleradius * Math.cos(angle));
 			bigBottomX = getBigCircleX(PROGRESS) - (int) (circleradius * Math.sin(angle));
-			bigBottomY = getleftRy() + (int) (circleradius * Math.cos(angle));
-
 			smallTopX = getSmallCircleX(PROGRESS) - (int) (getSmallRadius(PROGRESS) * Math.sin(angle));
-			smallTopY = getleftRy() - (int) (getSmallRadius(PROGRESS) * Math.cos(angle));
 			smallBottomX = getSmallCircleX(PROGRESS) - (int) (getSmallRadius(PROGRESS) * Math.sin(angle));
-			smallBottomY = getleftRy() + (int) (getSmallRadius(PROGRESS) * Math.cos(angle));
 		}
+		bigTopY = getMiddleRy() - (int) (circleradius * Math.cos(angle));
+		bigBottomY = getMiddleRy() + (int) (circleradius * Math.cos(angle));
+		smallTopY = getMiddleRy() - (int) (getSmallRadius(PROGRESS) * Math.cos(angle));
+		smallBottomY = getMiddleRy() + (int) (getSmallRadius(PROGRESS) * Math.cos(angle));
+
 		bezierTopX = (smallTopX + bigTopX) / 2;
 		bezierTopY = smallTopY - (smallTopY - bigTopY) / 4;
 		bezierBottomX = (smallBottomX + smallBottomX) / 2;
@@ -226,7 +226,7 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 		return getPaddingLeft() + backLength / 2 - circleradius;
 	}
 
-	private int getleftRy() {
+	private int getMiddleRy() {
 		int backHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
 		return getPaddingTop() + backHeight / 2;
 	}
@@ -234,11 +234,6 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 	private int getRightRx() {
 		int backLength = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
 		return getPaddingLeft() + backLength / 2 + circleradius;
-	}
-
-	private int getRightRy() {
-		int backHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-		return getPaddingTop() + backHeight / 2;
 	}
 
 	/**
