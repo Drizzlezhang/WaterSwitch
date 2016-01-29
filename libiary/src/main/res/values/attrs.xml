@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="WaterSwitchButton">
+		<attr name="ischecked"
+			format="boolean"/>
+		<attr name="backcolor"
+			format="color"/>
+		<attr name="switch_color"
+			format="color"/>
+	</declare-styleable>
+</resources>

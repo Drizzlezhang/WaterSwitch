@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:id="@+id/layout"
+	android:background="#000000"
+	tools:context="com.drizzle.waterswitchbutton.MainActivity"
+	>
+
+	<com.drizzle.waterswitch.WaterSwitchButton
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="40dp"
+		android:id="@+id/water_switch"
+		/>
+
+</FrameLayout>
