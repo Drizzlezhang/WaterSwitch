@@ -289,7 +289,11 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 	}
 
 	private int getSmallRadius(int progress) {
-		return circleradius * (100 - progress) / 100;
+		if (progress < MAINPROGRESS) {
+			return (circleradius - circleradius * progress / (2 * MAINPROGRESS));
+		} else {
+			return circleradius * (progress - MAINPROGRESS) / (2 * SECONDPROGRESS);
+		}
 	}
 
 	private void setPROGRESS(int PROGRESS) {
