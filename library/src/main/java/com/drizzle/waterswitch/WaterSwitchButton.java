@@ -179,7 +179,7 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 		//画水滴
 		circlePaint.setColor(switchColor);
 		//从关闭到打开
-		canvas.drawCircle(getBigCircleX(PROGRESS), getMiddleRy(), circleradius, circlePaint);
+		canvas.drawCircle(getBigCircleX(PROGRESS), getMiddleRy(), getBigRadius(PROGRESS), circlePaint);
 		canvas.drawCircle(getSmallCircleX(PROGRESS), getMiddleRy(), getSmallRadius(PROGRESS), circlePaint);
 		initPath();
 		canvas.drawPath(waterPath, circlePaint);
@@ -191,18 +191,18 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 		angle = getAngle();
 		//获取四个切点和贝塞尔控制点
 		if (isChecked) {
-			bigTopX = getBigCircleX(PROGRESS) + (int) (circleradius * Math.sin(angle));
-			bigBottomX = getBigCircleX(PROGRESS) + (int) (circleradius * Math.sin(angle));
+			bigTopX = getBigCircleX(PROGRESS) + (int) (getBigRadius(PROGRESS) * Math.sin(angle));
+			bigBottomX = getBigCircleX(PROGRESS) + (int) (getBigRadius(PROGRESS) * Math.sin(angle));
 			smallTopX = getSmallCircleX(PROGRESS) + (int) (getSmallRadius(PROGRESS) * Math.sin(angle));
 			smallBottomX = getSmallCircleX(PROGRESS) + (int) (getSmallRadius(PROGRESS) * Math.sin(angle));
 		} else {
-			bigTopX = getBigCircleX(PROGRESS) - (int) (circleradius * Math.sin(angle));
-			bigBottomX = getBigCircleX(PROGRESS) - (int) (circleradius * Math.sin(angle));
+			bigTopX = getBigCircleX(PROGRESS) - (int) (getBigRadius(PROGRESS) * Math.sin(angle));
+			bigBottomX = getBigCircleX(PROGRESS) - (int) (getBigRadius(PROGRESS) * Math.sin(angle));
 			smallTopX = getSmallCircleX(PROGRESS) - (int) (getSmallRadius(PROGRESS) * Math.sin(angle));
 			smallBottomX = getSmallCircleX(PROGRESS) - (int) (getSmallRadius(PROGRESS) * Math.sin(angle));
 		}
-		bigTopY = getMiddleRy() - (int) (circleradius * Math.cos(angle));
-		bigBottomY = getMiddleRy() + (int) (circleradius * Math.cos(angle));
+		bigTopY = getMiddleRy() - (int) (getBigRadius(PROGRESS) * Math.cos(angle));
+		bigBottomY = getMiddleRy() + (int) (getBigRadius(PROGRESS) * Math.cos(angle));
 		smallTopY = getMiddleRy() - (int) (getSmallRadius(PROGRESS) * Math.cos(angle));
 		smallBottomY = getMiddleRy() + (int) (getSmallRadius(PROGRESS) * Math.cos(angle));
 
@@ -288,11 +288,24 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 		}
 	}
 
+	/**
+	 * 动态获取圆的半径
+	 */
 	private int getSmallRadius(int progress) {
 		if (progress < MAINPROGRESS) {
 			return (circleradius - circleradius * progress / (2 * MAINPROGRESS));
 		} else {
 			return circleradius * (progress - MAINPROGRESS) / (2 * SECONDPROGRESS);
+		}
+	}
+
+	private int getBigRadius(int progress) {
+		if (progress < SECONDPROGRESS) {
+			return circleradius * (100 - progress) / 100;
+		} else if (progress > MAINPROGRESS) {
+			return circleradius * progress / 100;
+		} else {
+			return circleradius * MAINPROGRESS / 100;
 		}
 	}
 
