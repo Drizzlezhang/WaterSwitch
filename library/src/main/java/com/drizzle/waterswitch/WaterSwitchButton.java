@@ -11,7 +11,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.Transformation;
 
 /**
@@ -80,7 +80,7 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 	//切换动画
 	private void turnSwitch() {
 		WaterAnimation animation = new WaterAnimation(0, 100, this);
-		animation.setInterpolator(new DecelerateInterpolator());
+		animation.setInterpolator(new BounceInterpolator());
 		animation.setDuration(DURATION);
 		animation.setAnimationListener(new Animation.AnimationListener() {
 			@Override public void onAnimationStart(Animation animation) {
