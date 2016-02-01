@@ -80,7 +80,7 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 	//切换动画
 	private void turnSwitch() {
 		WaterAnimation animation = new WaterAnimation(0, 100, this);
-		animation.setInterpolator(new BounceInterpolator());
+		animation.setInterpolator(new BounceInterpolator());//设置不同的Interpolator
 		animation.setDuration(DURATION);
 		animation.setAnimationListener(new Animation.AnimationListener() {
 			@Override public void onAnimationStart(Animation animation) {
