@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
@@ -88,7 +87,7 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 			}
 
 			@Override public void onAnimationEnd(Animation animation) {
-				handler.sendEmptyMessageDelayed(1, 1);
+				post(runnable);
 			}
 
 			@Override public void onAnimationRepeat(Animation animation) {
@@ -107,24 +106,17 @@ public class WaterSwitchButton extends View implements View.OnClickListener {
 		}
 	}
 
-	private android.os.Handler handler = new android.os.Handler() {
-		@Override public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			switch (msg.what) {
-				case 1:
-					if (isChecked) {
-						isChecked = false;
-					} else {
-						isChecked = true;
-					}
-					if (switchChangedListener != null) {
-						switchChangedListener.onWaterSwitchChanged(isChecked);
-					}
-					PROGRESS = 0;
-					break;
-				default:
-					break;
+	Runnable runnable = new Runnable() {
+		@Override public void run() {
+			if (isChecked) {
+				isChecked = false;
+			} else {
+				isChecked = true;
 			}
+			if (switchChangedListener != null) {
+				switchChangedListener.onWaterSwitchChanged(isChecked);
+			}
+			PROGRESS = 0;
 		}
 	};
 
